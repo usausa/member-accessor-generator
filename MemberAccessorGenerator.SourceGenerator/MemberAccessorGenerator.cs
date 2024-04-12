@@ -94,14 +94,14 @@ public sealed class MemberAccessorGenerator : IIncrementalGenerator
 
             // Write
             context.AddSource(
-                MakeRegistryFilename(filename, ns, className),
+                MakeAccessorFilename(filename, ns, className),
                 SourceText.From(source.ToString(), Encoding.UTF8));
 
             source.Clear();
         }
     }
 
-    private static string MakeRegistryFilename(StringBuilder buffer, string ns, string className)
+    private static string MakeAccessorFilename(StringBuilder buffer, string ns, string className)
     {
         buffer.Clear();
 
