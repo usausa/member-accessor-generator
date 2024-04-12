@@ -1,7 +1,7 @@
 namespace MemberAccessorGenerator;
 
 [GenerateAccessor]
-public partial class Data
+public class Data
 {
     public int Id { get; set; }
 
