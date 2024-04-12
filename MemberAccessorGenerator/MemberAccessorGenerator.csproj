@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>MemberAccessorGenerator</PackageId>
+    <Title>MemberAccessorGenerator</Title>
+    <Description>Common code generator.</Description>
+    <PackageTags>generator</PackageTags>
+  </PropertyGroup>
+
+</Project>
