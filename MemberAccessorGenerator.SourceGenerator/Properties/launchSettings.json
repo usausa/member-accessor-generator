@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MemberAccessorGenerator.SourceGenerator.Tests": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\MemberAccessorGenerator.SourceGenerator.Tests\\MemberAccessorGenerator.SourceGenerator.Tests.csproj"
+    }
+  }
+}

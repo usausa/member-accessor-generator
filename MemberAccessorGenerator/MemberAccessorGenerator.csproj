@@ -9,7 +9,7 @@
   <PropertyGroup>
     <PackageId>MemberAccessorGenerator</PackageId>
     <Title>MemberAccessorGenerator</Title>
-    <Description>Common code generator.</Description>
+    <Description>Member accessor code generator.</Description>
     <PackageTags>generator</PackageTags>
   </PropertyGroup>
 
