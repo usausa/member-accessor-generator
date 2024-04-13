@@ -35,6 +35,7 @@ public class BenchmarkConfig : ManualConfig
     }
 }
 
+#pragma warning disable CA1822
 [Config(typeof(BenchmarkConfig))]
 public class Benchmark
 {
@@ -59,12 +60,22 @@ public class Benchmark
     }
 
     [Benchmark(OperationsPerInvoke = N)]
+    public void DirectGetter()
+    {
+        var o = Data;
+        for (var i = 0; i < N; i++)
+        {
+            _ = o.Id;
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
     public void ExpressionGetter()
     {
         var o = Data;
         for (var i = 0; i < N; i++)
         {
-            expressionGetter(o);
+            _ = expressionGetter(o);
         }
     }
 
@@ -74,7 +85,17 @@ public class Benchmark
         var o = Data;
         for (var i = 0; i < N; i++)
         {
-            generatorGetter(o);
+            _ = generatorGetter(o);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void DirectSetter()
+    {
+        var o = Data;
+        for (var i = 0; i < N; i++)
+        {
+            o.Id = 0;
         }
     }
 

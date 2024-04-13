@@ -51,7 +51,9 @@ AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
 ```
 | Method           | Mean      | Error     | StdDev    | Min       | Max       | P90       | Code Size | Allocated |
 |----------------- |----------:|----------:|----------:|----------:|----------:|----------:|----------:|----------:|
-| ExpressionGetter | 1.1036 ns | 0.0181 ns | 0.0169 ns | 1.0813 ns | 1.1248 ns | 1.1205 ns |      57 B |         - |
-| GeneratorGetter  | 0.2930 ns | 0.0016 ns | 0.0015 ns | 0.2908 ns | 0.2956 ns | 0.2948 ns |      75 B |         - |
-| ExpressionSetter | 1.2986 ns | 0.0073 ns | 0.0068 ns | 1.2891 ns | 1.3086 ns | 1.3081 ns |      60 B |         - |
-| GeneratorSetter  | 0.4361 ns | 0.0014 ns | 0.0011 ns | 0.4340 ns | 0.4378 ns | 0.4372 ns |      83 B |         - |
+| DirectGetter     | 0.2233 ns | 0.0044 ns | 0.0045 ns | 0.2157 ns | 0.2294 ns | 0.2282 ns |      12 B |         - |
+| ExpressionGetter | 1.1028 ns | 0.0205 ns | 0.0201 ns | 1.0798 ns | 1.1326 ns | 1.1289 ns |      57 B |         - |
+| GeneratorGetter  | 0.2975 ns | 0.0035 ns | 0.0033 ns | 0.2939 ns | 0.3038 ns | 0.3016 ns |      75 B |         - |
+| DirectSetter     | 0.2206 ns | 0.0023 ns | 0.0022 ns | 0.2176 ns | 0.2242 ns | 0.2236 ns |      31 B |         - |
+| ExpressionSetter | 1.3123 ns | 0.0217 ns | 0.0203 ns | 1.2948 ns | 1.3487 ns | 1.3466 ns |      60 B |         - |
+| GeneratorSetter  | 0.4418 ns | 0.0063 ns | 0.0059 ns | 0.4328 ns | 0.4494 ns | 0.4484 ns |      83 B |         - |
