@@ -113,7 +113,7 @@ public sealed class MemberAccessorGenerator : IIncrementalGenerator
             // class
             source.Append("    internal sealed class ");
             source.Append(factoryName);
-            source.Append(" : IAccessorFactory<");
+            source.Append(" : MemberAccessorGenerator.IAccessorFactory<");
             source.Append(className);
             source.Append('>');
             source.AppendLine();
