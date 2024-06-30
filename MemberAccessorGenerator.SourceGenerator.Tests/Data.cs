@@ -7,3 +7,9 @@ public class Data
 
     public string Name { get; set; } = default!;
 }
+
+[GenerateAccessor]
+public class GenericData<T>
+{
+    public T Value { get; set; } = default!;
+}
