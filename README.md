@@ -8,8 +8,8 @@ Add reference to MemberAccessorGenerator and MemberAccessorGenerator.SourceGener
 
 ```xml
   <ItemGroup>
-    <PackageReference Include="MemberAccessorGenerator" Version="0.1.0" />
-    <PackageReference Include="MemberAccessorGenerator.SourceGenerator" Version="0.1.0">
+    <PackageReference Include="MemberAccessorGenerator" Version="0.3.0" />
+    <PackageReference Include="MemberAccessorGenerator.SourceGenerator" Version="0.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
