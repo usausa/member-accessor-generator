@@ -8,7 +8,7 @@ internal static class RoslynExtensions
     {
         var identifier = syntax.Identifier.ToString();
         return syntax.TypeParameterList is not null
-            ? $"{identifier}<{String.Join(", ", syntax.TypeParameterList.Parameters.Select(p => p.Identifier.ToString()))}>"
+            ? $"{identifier}<{String.Join(", ", syntax.TypeParameterList.Parameters.Select(static p => p.Identifier.ToString()))}>"
             : identifier;
     }
 }

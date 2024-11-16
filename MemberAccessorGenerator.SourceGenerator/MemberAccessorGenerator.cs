@@ -271,7 +271,7 @@ public sealed class MemberAccessorGenerator : IIncrementalGenerator
 
     private static string MakeFactoryName(ClassDeclarationSyntax syntax) =>
         syntax.TypeParameterList is not null
-            ? $"{syntax.Identifier}_AccessorFactory<{String.Join(", ", syntax.TypeParameterList.Parameters.Select(p => p.Identifier.ToString()))}>"
+            ? $"{syntax.Identifier}_AccessorFactory<{String.Join(", ", syntax.TypeParameterList.Parameters.Select(static p => p.Identifier.ToString()))}>"
             : $"{syntax.Identifier}_AccessorFactory";
 
     private static string MakeTargetName(string ns, ClassDeclarationSyntax syntax)
