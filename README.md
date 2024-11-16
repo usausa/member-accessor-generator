@@ -1,6 +1,6 @@
 # MemberAccessorGenerator
 
-[![NuGet Badge](https://buildstats.info/nuget/MemberAccessorGenerator)](https://www.nuget.org/packages/MemberAccessorGenerator/)
+[![NuGet](https://img.shields.io/nuget/v/MemberAccessorGenerator.svg)](https://www.nuget.org/packages/MemberAccessorGenerator)
 
 ## Reference
 
