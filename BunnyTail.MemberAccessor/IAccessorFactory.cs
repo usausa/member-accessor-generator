@@ -1,4 +1,4 @@
-namespace MemberAccessorGenerator;
+namespace BunnyTail.MemberAccessor;
 
 public interface IAccessorFactory
 {

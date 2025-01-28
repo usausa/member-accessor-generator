@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BunnyTail.MemberAccessor.Generator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\BunnyTail.MemberAccessor.Tests\\BunnyTail.MemberAccessor.Tests.csproj"
+    }
+  }
+}

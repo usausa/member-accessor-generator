@@ -1,4 +1,4 @@
-namespace MemberAccessorGenerator;
+namespace BunnyTail.MemberAccessor;
 
 [GenerateAccessor]
 public class Data
