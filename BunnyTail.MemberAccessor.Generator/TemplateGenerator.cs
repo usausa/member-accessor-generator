@@ -104,7 +104,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         builder.EnableNullable();
         builder.NewLine();
 
-        var className = $"{type.Namespace}.{type.ClassName}";
+        var className = $"global::{type.Namespace}.{type.ClassName}";
 
         // namespace
         if (!String.IsNullOrEmpty(type.Namespace))
@@ -382,17 +382,23 @@ public sealed class TemplateGenerator : IIncrementalGenerator
     private static string MakeRegistryTargetName(TypeModel model)
     {
         var index = model.ClassName.IndexOf('<');
+        var ns = String.IsNullOrEmpty(model.Namespace)
+            ? string.Empty
+            : $"global::{model.Namespace}.";
         return index < 0
-            ? $"{model.Namespace}.{model.ClassName}"
-            : $"{model.Namespace}.{model.ClassName.Substring(0, index)}<>";
+            ? $"{ns}{model.ClassName}"
+            : $"{ns}{model.ClassName.Substring(0, index)}<>";
     }
 
     private static string MakeRegistryFactoryName(TypeModel model)
     {
         var index = model.ClassName.IndexOf('<');
+        var ns = String.IsNullOrEmpty(model.Namespace)
+            ? string.Empty
+            : $"global::{model.Namespace}.";
         return index < 0
-            ? $"{model.Namespace}.{model.ClassName}{AccessorFactorySuffix}"
-            : $"{model.Namespace}.{model.ClassName.Substring(0, index)}{AccessorFactorySuffix}<>";
+            ? $"{ns}{model.ClassName}{AccessorFactorySuffix}"
+            : $"{ns}{model.ClassName.Substring(0, index)}{AccessorFactorySuffix}<>";
     }
 
     private static void AppendObjectGetter(SourceBuilder builder, string name) =>

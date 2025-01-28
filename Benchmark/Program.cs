@@ -9,7 +9,7 @@ using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Running;
 
-using MemberAccessorGenerator;
+using BunnyTail.MemberAccessor;
 
 public static class Program
 {

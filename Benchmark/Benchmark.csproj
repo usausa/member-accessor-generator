@@ -6,9 +6,15 @@
     <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+
+  <Import Project="..\BunnyTail.MemberAccessor.props" />
+
   <ItemGroup>
-    <ProjectReference Include="..\MemberAccessorGenerator.SourceGenerator\MemberAccessorGenerator.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\MemberAccessorGenerator\MemberAccessorGenerator.csproj" />
+    <ProjectReference Include="..\BunnyTail.MemberAccessor.Generator\BunnyTail.MemberAccessor.Generator.csproj" OutputItemType="analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\BunnyTail.MemberAccessor\BunnyTail.MemberAccessor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
