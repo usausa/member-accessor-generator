@@ -8,7 +8,7 @@ Add reference to BunnyTail.MemberAccessor to csproj.
 
 ```xml
   <ItemGroup>
-    <PackageReference Include="BunnyTail.MemberAccessor" Version="1.0.0" />
+    <PackageReference Include="BunnyTail.MemberAccessor" Version="1.1.0" />
   </ItemGroup>
 ```
 
