@@ -2,8 +2,7 @@ namespace BunnyTail.MemberAccessor.Generator.Models;
 
 using BunnyTail.MemberAccessor.Generator.Helpers;
 
-internal sealed record TypeModel(
+internal sealed record ClosedGenericModel(
     string Namespace,
     string ClassName,
-    int TypeArgumentCount,
-    EquatableArray<PropertyModel> Properties);
+    EquatableArray<string> TypeArguments);

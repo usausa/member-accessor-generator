@@ -9,7 +9,18 @@ public class Data
 }
 
 [GenerateAccessor]
+[TypedAccessor(typeof(GenericData<DateTime>))]
+[TypedAccessor(typeof(GenericData<short>))]
 public class GenericData<T>
 {
     public T Value { get; set; } = default!;
+}
+
+[GenerateAccessor]
+[TypedAccessor(typeof(MultiGenericData<string, string>))]
+public class MultiGenericData<T1, T2>
+{
+    public T1 Value1 { get; set; } = default!;
+
+    public T2 Value2 { get; set; } = default!;
 }

@@ -66,4 +66,40 @@ public class MemberAccessorTest
 
         Assert.Equal("xyz", data2.Value);
     }
+
+    [Fact]
+    public void TestMultiGenerics()
+    {
+        var accessorFactory1 = AccessorRegistry.FindFactory<MultiGenericData<int, int>>();
+        var accessorFactory2 = AccessorRegistry.FindFactory<MultiGenericData<string, string>>();
+
+        Assert.NotNull(accessorFactory1);
+        Assert.NotNull(accessorFactory2);
+
+        var get1 = accessorFactory1.CreateGetter<int>(nameof(MultiGenericData<int, int>.Value1));
+        var set1 = accessorFactory1.CreateSetter<int>(nameof(MultiGenericData<int, int>.Value1));
+        var get2 = accessorFactory2.CreateGetter<string>(nameof(MultiGenericData<string, string>.Value1));
+        var set2 = accessorFactory2.CreateSetter<string>(nameof(MultiGenericData<string, string>.Value1));
+
+        Assert.NotNull(get1);
+        Assert.NotNull(set1);
+        Assert.NotNull(get2);
+        Assert.NotNull(set2);
+
+        var data1 = new MultiGenericData<int, int> { Value1 = 123 };
+
+        Assert.Equal(123, get1(data1));
+
+        set1(data1, 234);
+
+        Assert.Equal(234, data1.Value1);
+
+        var data2 = new MultiGenericData<string, string> { Value1 = "abc" };
+
+        Assert.Equal("abc", get2(data2));
+
+        set2(data2, "xyz");
+
+        Assert.Equal("xyz", data2.Value1);
+    }
 }
