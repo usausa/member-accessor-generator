@@ -1,6 +1,6 @@
 namespace BunnyTail.MemberAccessor.Generator.Models;
 
-using BunnyTail.MemberAccessor.Generator.Helpers;
+using SourceGenerateHelper;
 
 internal sealed record ClosedGenericModel(
     string Namespace,

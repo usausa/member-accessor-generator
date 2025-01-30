@@ -4,12 +4,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-using BunnyTail.MemberAccessor.Generator.Helpers;
 using BunnyTail.MemberAccessor.Generator.Models;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+
+using SourceGenerateHelper;
 
 [Generator]
 public sealed class TemplateGenerator : IIncrementalGenerator
@@ -133,17 +134,17 @@ public sealed class TemplateGenerator : IIncrementalGenerator
 
     private static void Execute(SourceProductionContext context, ImmutableArray<Result<TypeModel>> types, ImmutableArray<EquatableArray<Result<ClosedGenericModel>>> closedGenerics)
     {
-        foreach (var info in types.SelectPart(static x => x.Error))
+        foreach (var info in types.SelectError())
         {
             context.ReportDiagnostic(info);
         }
-        foreach (var info in closedGenerics.SelectMany(static x => x.ToArray().SelectPart(static x => x.Error)))
+        foreach (var info in closedGenerics.SelectMany(static x => x.ToArray().SelectError()))
         {
             context.ReportDiagnostic(info);
         }
 
-        var targetTypes = types.SelectPart(static x => x.Value).ToList();
-        var closedTypes = closedGenerics.SelectMany(static x => x.ToArray().SelectPart(static x => x.Value)).ToList();
+        var targetTypes = types.SelectValue().ToList();
+        var closedTypes = closedGenerics.SelectMany(static x => x.ToArray().SelectValue()).ToList();
 
         var builder = new SourceBuilder();
         foreach (var type in targetTypes)
