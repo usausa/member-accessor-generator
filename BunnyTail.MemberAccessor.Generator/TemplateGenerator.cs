@@ -62,7 +62,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
 
         var properties = symbol.GetMembers()
             .OfType<IPropertySymbol>()
-            .Select(static x => new PropertyModel(x.Name, x.Type.ToDisplayString()))
+            .Select(static x => new PropertyModel(x.Name, x.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
             .ToArray();
 
         return Results.Success(new TypeModel(
@@ -120,7 +120,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
             ? string.Empty
             : symbol.ContainingNamespace.ToDisplayString();
 
-        var typeArguments = symbol.TypeArguments.Select(static x => x.ToDisplayString()).ToArray();
+        var typeArguments = symbol.TypeArguments.Select(static x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).ToArray();
 
         return Results.Success(new ClosedGenericModel(
             ns,
@@ -185,7 +185,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         builder.Indent()
             .Append("internal sealed class ")
             .Append(MakeFactoryName(type))
-            .Append(" : BunnyTail.MemberAccessor.IAccessorFactory<")
+            .Append(" : global::BunnyTail.MemberAccessor.IAccessorFactory<")
             .Append(className)
             .Append('>')
             .NewLine();
@@ -198,7 +198,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         {
             builder
                 .Indent()
-                .Append("private static readonly Func<object, object?> ");
+                .Append("private static readonly global::System.Func<object, object?> ");
             AppendObjectGetter(builder, property.Name);
             builder
                 .Append(" = static x => ((")
@@ -216,7 +216,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         {
             builder
                 .Indent()
-                .Append("private static readonly Action<object, object?> ");
+                .Append("private static readonly global::System.Action<object, object?> ");
             AppendObjectSetter(builder, property.Name);
             builder
                 .Append(" = static (x, v) => ((")
@@ -236,7 +236,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         {
             builder
                 .Indent()
-                .Append("private static readonly Func<")
+                .Append("private static readonly global::System.Func<")
                 .Append(className)
                 .Append(", ")
                 .Append(property.Type)
@@ -256,7 +256,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         {
             builder
                 .Indent()
-                .Append("private static readonly Action<")
+                .Append("private static readonly global::System.Action<")
                 .Append(className)
                 .Append(", ")
                 .Append(property.Type)
@@ -276,7 +276,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // getter
         builder
             .Indent()
-            .Append("public Func<object, object?>? CreateGetter(string name)")
+            .Append("public global::System.Func<object, object?>? CreateGetter(string name)")
             .NewLine();
         builder.BeginScope();
 
@@ -304,7 +304,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // setter
         builder
             .Indent()
-            .Append("public Action<object, object?>? CreateSetter(string name)")
+            .Append("public global::System.Action<object, object?>? CreateSetter(string name)")
             .NewLine();
         builder.BeginScope();
 
@@ -332,7 +332,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // getter
         builder
             .Indent()
-            .Append("public Func<")
+            .Append("public global::System.Func<")
             .Append(className)
             .Append(", TProperty>? CreateGetter<TProperty>(string name)")
             .NewLine();
@@ -344,7 +344,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
                 .Indent()
                 .Append("if (name == \"")
                 .Append(property.Name)
-                .Append("\") return (Func<")
+                .Append("\") return (global::System.Func<")
                 .Append(className)
                 .Append(", TProperty>)(object)");
             AppendTypedGetter(builder, property.Name);
@@ -364,7 +364,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // setter
         builder
             .Indent()
-            .Append("public Action<")
+            .Append("public global::System.Action<")
             .Append(className)
             .Append(", TProperty>? CreateSetter<TProperty>(string name)")
             .NewLine();
@@ -376,7 +376,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
                 .Indent()
                 .Append("if (name == \"")
                 .Append(property.Name)
-                .Append("\") return (Action<")
+                .Append("\") return (global::System.Action<")
                 .Append(className)
                 .Append(", TProperty>)(object)");
             AppendTypedSetter(builder, property.Name);
@@ -410,7 +410,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // method
         builder
             .Indent()
-            .Append("[System.Runtime.CompilerServices.ModuleInitializer]")
+            .Append("[global::System.Runtime.CompilerServices.ModuleInitializer]")
             .NewLine();
         builder
             .Indent()
@@ -422,7 +422,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         {
             builder
                 .Indent()
-                .Append("BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(")
+                .Append("global::BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(")
                 .Append(MakeRegistryTargetName(type))
                 .Append("), typeof(")
                 .Append(MakeRegistryFactoryName(type))
@@ -438,7 +438,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
                     {
                         builder
                             .Indent()
-                            .Append("BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(")
+                            .Append("global::BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(")
                             .Append(MakeRegistryTargetName(closedType))
                             .Append("), typeof(")
                             .Append(MakeRegistryFactoryName(closedType))
