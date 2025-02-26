@@ -255,7 +255,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
                 .Append(className)
                 .Append(" x) => x.")
                 .Append(property.Name)
-                .Append(") }")
+                .Append("!) }")
                 .AppendIf(i < properties.Length - 1, ",")
                 .NewLine();
         }
@@ -282,7 +282,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
                 .Append(property.Type)
                 .Append(" v) => x.")
                 .Append(property.Name)
-                .Append(" = v) }")
+                .Append(" = v!) }")
                 .AppendIf(i < properties.Length - 1, ",")
                 .NewLine();
         }
