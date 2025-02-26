@@ -173,6 +173,7 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         builder.NewLine();
 
         var className = $"global::{type.Namespace}.{type.ClassName}";
+        var properties = type.Properties.ToArray();
 
         // namespace
         if (!String.IsNullOrEmpty(type.Namespace))
@@ -194,80 +195,98 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // property
 
         // getter
-        foreach (var property in type.Properties.ToArray())
+        BeginDictionary(builder, "ObjectGetter", "global::System.Func<object, object?>");
+        for (var i = 0; i < properties.Length; i++)
         {
+            var property = properties[i];
             builder
                 .Indent()
-                .Append("private static readonly global::System.Func<object, object?> ");
-            AppendObjectGetter(builder, property.Name);
-            builder
-                .Append(" = static x => ((")
+                .Append("{ \"")
+                .Append(property.Name)
+                .Append("\", static x => ((")
                 .Append(className)
                 .Append(")x).")
                 .Append(property.Name)
-                .Append("!;")
+                .Append("! }")
+                .AppendIf(i < properties.Length - 1, ",")
                 .NewLine();
         }
+        EndDictionary(builder);
 
         builder.NewLine();
 
         // setter
-        foreach (var property in type.Properties.ToArray())
+        BeginDictionary(builder, "ObjectSetter", "global::System.Action<object, object?>");
+        for (var i = 0; i < properties.Length; i++)
         {
+            var property = properties[i];
             builder
                 .Indent()
-                .Append("private static readonly global::System.Action<object, object?> ");
-            AppendObjectSetter(builder, property.Name);
-            builder
-                .Append(" = static (x, v) => ((")
+                .Append("{ \"")
+                .Append(property.Name)
+                .Append("\", static (x, v) => ((")
                 .Append(className)
                 .Append(")x).")
                 .Append(property.Name)
                 .Append(" = (")
                 .Append(property.Type)
-                .Append(")v!;")
+                .Append(")v! }")
+                .AppendIf(i < properties.Length - 1, ",")
                 .NewLine();
         }
+        EndDictionary(builder);
 
         builder.NewLine();
 
         // getter
-        foreach (var property in type.Properties.ToArray())
+        BeginDictionary(builder, "TypedGetter", "object");
+        for (var i = 0; i < properties.Length; i++)
         {
+            var property = properties[i];
             builder
                 .Indent()
-                .Append("private static readonly global::System.Func<")
+                .Append("{ \"")
+                .Append(property.Name)
+                .Append("\", (global::System.Func<")
                 .Append(className)
                 .Append(", ")
                 .Append(property.Type)
-                .Append("> ");
-            AppendTypedGetter(builder, property.Name);
-            builder
-                .Append(" = static x => x.")
+                .Append(">)(static (")
+                .Append(className)
+                .Append(" x) => x.")
                 .Append(property.Name)
-                .Append(';')
+                .Append(") }")
+                .AppendIf(i < properties.Length - 1, ",")
                 .NewLine();
         }
+        EndDictionary(builder);
 
         builder.NewLine();
 
         // setter
-        foreach (var property in type.Properties.ToArray())
+        BeginDictionary(builder, "TypedSetter", "object");
+        for (var i = 0; i < properties.Length; i++)
         {
+            var property = properties[i];
             builder
                 .Indent()
-                .Append("private static readonly global::System.Action<")
+                .Append("{ \"")
+                .Append(property.Name)
+                .Append("\", (global::System.Action<")
                 .Append(className)
                 .Append(", ")
                 .Append(property.Type)
-                .Append("> ");
-            AppendTypedSetter(builder, property.Name);
-            builder
-                .Append(" = static (x, v) => x.")
+                .Append(">)(static (")
+                .Append(className)
+                .Append(" x, ")
+                .Append(property.Type)
+                .Append(" v) => x.")
                 .Append(property.Name)
-                .Append(" = v;")
+                .Append(" = v) }")
+                .AppendIf(i < properties.Length - 1, ",")
                 .NewLine();
         }
+        EndDictionary(builder);
 
         builder.NewLine();
 
@@ -276,120 +295,37 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         // getter
         builder
             .Indent()
-            .Append("public global::System.Func<object, object?>? CreateGetter(string name)")
+            .Append("public global::System.Func<object, object?>? CreateGetter(string name) => ObjectGetter.GetValueOrDefault(name);")
+            .NewLine()
             .NewLine();
-        builder.BeginScope();
-
-        foreach (var property in type.Properties.ToArray())
-        {
-            builder
-                .Indent()
-                .Append("if (name == \"")
-                .Append(property.Name)
-                .Append("\") return ");
-            AppendObjectGetter(builder, property.Name);
-            builder
-                .Append(';')
-                .NewLine();
-        }
-
-        builder
-            .Indent()
-            .Append("return null;")
-            .NewLine();
-        builder.EndScope();
-
-        builder.NewLine();
 
         // setter
         builder
             .Indent()
-            .Append("public global::System.Action<object, object?>? CreateSetter(string name)")
+            .Append("public global::System.Action<object, object?>? CreateSetter(string name) => ObjectSetter.GetValueOrDefault(name);")
+            .NewLine()
             .NewLine();
-        builder.BeginScope();
-
-        foreach (var property in type.Properties.ToArray())
-        {
-            builder
-                .Indent()
-                .Append("if (name == \"")
-                .Append(property.Name)
-                .Append("\") return ");
-            AppendObjectSetter(builder, property.Name);
-            builder
-                .Append(';')
-                .NewLine();
-        }
-
-        builder
-            .Indent()
-            .Append("return null;")
-            .NewLine();
-        builder.EndScope();
-
-        builder.NewLine();
 
         // getter
         builder
             .Indent()
             .Append("public global::System.Func<")
             .Append(className)
-            .Append(", TProperty>? CreateGetter<TProperty>(string name)")
+            .Append(", TProperty>? CreateGetter<TProperty>(string name) => (global::System.Func<")
+            .Append(className)
+            .Append(", TProperty>?)TypedGetter.GetValueOrDefault(name);")
+            .NewLine()
             .NewLine();
-        builder.BeginScope();
-
-        foreach (var property in type.Properties.ToArray())
-        {
-            builder
-                .Indent()
-                .Append("if (name == \"")
-                .Append(property.Name)
-                .Append("\") return (global::System.Func<")
-                .Append(className)
-                .Append(", TProperty>)(object)");
-            AppendTypedGetter(builder, property.Name);
-            builder
-                .Append(';')
-                .NewLine();
-        }
-
-        builder
-            .Indent()
-        .Append("return null;")
-        .NewLine();
-        builder.EndScope();
-
-        builder.NewLine();
 
         // setter
         builder
             .Indent()
             .Append("public global::System.Action<")
             .Append(className)
-            .Append(", TProperty>? CreateSetter<TProperty>(string name)")
+            .Append(", TProperty>? CreateSetter<TProperty>(string name) => (global::System.Action<")
+            .Append(className)
+            .Append(", TProperty>?)TypedSetter.GetValueOrDefault(name);")
             .NewLine();
-        builder.BeginScope();
-
-        foreach (var property in type.Properties.ToArray())
-        {
-            builder
-                .Indent()
-                .Append("if (name == \"")
-                .Append(property.Name)
-                .Append("\") return (global::System.Action<")
-                .Append(className)
-                .Append(", TProperty>)(object)");
-            AppendTypedSetter(builder, property.Name);
-            builder
-                .Append(';')
-                .NewLine();
-        }
-
-        builder
-            .Indent()
-            .Append("return null;")
-            .NewLine();
-        builder.EndScope();
 
         builder.EndScope();
     }
@@ -505,17 +441,33 @@ public sealed class TemplateGenerator : IIncrementalGenerator
         return $"{ns}{model.ClassName.Substring(0, index)}{AccessorFactorySuffix}{model.ClassName.Substring(index)}";
     }
 
-    private static void AppendObjectGetter(SourceBuilder builder, string name) =>
-        builder.Append("Object").Append(name).Append("Getter");
+    private static void BeginDictionary(SourceBuilder builder, string name, string valueType)
+    {
+        builder
+            .Indent()
+            .Append("private static readonly global::System.Collections.Frozen.FrozenDictionary<string, ")
+            .Append(valueType)
+            .Append("> ")
+            .Append(name)
+            .Append(" = global::System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(new global::System.Collections.Generic.Dictionary<string, ")
+            .Append(valueType)
+            .Append(">")
+            .NewLine();
+        builder
+            .Indent()
+            .Append("{")
+            .NewLine();
+        builder.IndentLevel++;
+    }
 
-    private static void AppendObjectSetter(SourceBuilder builder, string name) =>
-        builder.Append("Object").Append(name).Append("Setter");
-
-    private static void AppendTypedGetter(SourceBuilder builder, string name) =>
-        builder.Append("Typed").Append(name).Append("Getter");
-
-    private static void AppendTypedSetter(SourceBuilder builder, string name) =>
-        builder.Append("Typed").Append(name).Append("Setter");
+    private static void EndDictionary(SourceBuilder builder)
+    {
+        builder.IndentLevel--;
+        builder
+            .Indent()
+            .Append("});")
+            .NewLine();
+    }
 
     private static string MakeFilename(string ns, string className)
     {

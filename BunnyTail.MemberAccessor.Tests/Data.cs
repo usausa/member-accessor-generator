@@ -9,6 +9,14 @@ public class Data
 }
 
 [GenerateAccessor]
+public class NullableData
+{
+    public int? Id { get; set; }
+
+    public string? Name { get; set; }
+}
+
+[GenerateAccessor]
 [TypedAccessor(typeof(GenericData<DateTime>))]
 [TypedAccessor(typeof(GenericData<short>))]
 public class GenericData<T>

@@ -32,6 +32,41 @@ public class MemberAccessorTest
     }
 
     [Fact]
+    public void TestNullable()
+    {
+        var accessorFactory = AccessorRegistry.FindFactory<NullableData>();
+
+        Assert.NotNull(accessorFactory);
+
+        var getId = accessorFactory.CreateGetter<int?>(nameof(NullableData.Id));
+        var getName = accessorFactory.CreateGetter<string?>(nameof(NullableData.Name));
+        var setId = accessorFactory.CreateSetter<int?>(nameof(NullableData.Id));
+        var setName = accessorFactory.CreateSetter<string?>(nameof(NullableData.Name));
+
+        Assert.NotNull(getId);
+        Assert.NotNull(getName);
+        Assert.NotNull(setId);
+        Assert.NotNull(setName);
+
+        var data = new NullableData { Id = 123, Name = "abc" };
+
+        Assert.Equal(123, getId(data));
+        Assert.Equal("abc", getName(data));
+
+        setId(data, 234);
+        setName(data, "xyz");
+
+        Assert.Equal(234, data.Id);
+        Assert.Equal("xyz", data.Name);
+
+        setId(data, null);
+        setName(data, null);
+
+        Assert.Null(data.Id);
+        Assert.Null(data.Name);
+    }
+
+    [Fact]
     public void TestGenerics()
     {
         var accessorFactory1 = AccessorRegistry.FindFactory<GenericData<int>>();
