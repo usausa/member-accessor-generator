@@ -75,10 +75,10 @@ public class MemberAccessorTest
         Assert.NotNull(accessorFactory1);
         Assert.NotNull(accessorFactory2);
 
-        var get1 = accessorFactory1.CreateGetter<int>(nameof(GenericData<int>.Value));
-        var set1 = accessorFactory1.CreateSetter<int>(nameof(GenericData<int>.Value));
-        var get2 = accessorFactory2.CreateGetter<string>(nameof(GenericData<string>.Value));
-        var set2 = accessorFactory2.CreateSetter<string>(nameof(GenericData<string>.Value));
+        var get1 = accessorFactory1.CreateGetter<int>(nameof(GenericData<>.Value));
+        var set1 = accessorFactory1.CreateSetter<int>(nameof(GenericData<>.Value));
+        var get2 = accessorFactory2.CreateGetter<string>(nameof(GenericData<>.Value));
+        var set2 = accessorFactory2.CreateSetter<string>(nameof(GenericData<>.Value));
 
         Assert.NotNull(get1);
         Assert.NotNull(set1);
@@ -111,10 +111,10 @@ public class MemberAccessorTest
         Assert.NotNull(accessorFactory1);
         Assert.NotNull(accessorFactory2);
 
-        var get1 = accessorFactory1.CreateGetter<int>(nameof(MultiGenericData<int, int>.Value1));
-        var set1 = accessorFactory1.CreateSetter<int>(nameof(MultiGenericData<int, int>.Value1));
-        var get2 = accessorFactory2.CreateGetter<string>(nameof(MultiGenericData<string, string>.Value1));
-        var set2 = accessorFactory2.CreateSetter<string>(nameof(MultiGenericData<string, string>.Value1));
+        var get1 = accessorFactory1.CreateGetter<int>(nameof(MultiGenericData<,>.Value1));
+        var set1 = accessorFactory1.CreateSetter<int>(nameof(MultiGenericData<,>.Value1));
+        var get2 = accessorFactory2.CreateGetter<string>(nameof(MultiGenericData<,>.Value1));
+        var set2 = accessorFactory2.CreateSetter<string>(nameof(MultiGenericData<,>.Value1));
 
         Assert.NotNull(get1);
         Assert.NotNull(set1);
