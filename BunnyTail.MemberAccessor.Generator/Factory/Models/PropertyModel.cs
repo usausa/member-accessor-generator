@@ -1,4 +1,4 @@
-namespace BunnyTail.MemberAccessor.Generator.Models;
+namespace BunnyTail.MemberAccessor.Generator.Factory.Models;
 
 internal sealed record PropertyModel(
     string Name,

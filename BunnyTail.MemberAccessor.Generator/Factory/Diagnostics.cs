@@ -1,4 +1,4 @@
-namespace BunnyTail.MemberAccessor.Generator;
+namespace BunnyTail.MemberAccessor.Generator.Factory;
 
 using Microsoft.CodeAnalysis;
 

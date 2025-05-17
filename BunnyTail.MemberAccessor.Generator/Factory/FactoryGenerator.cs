@@ -1,10 +1,10 @@
-namespace BunnyTail.MemberAccessor.Generator;
+namespace BunnyTail.MemberAccessor.Generator.Factory;
 
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-using BunnyTail.MemberAccessor.Generator.Models;
+using BunnyTail.MemberAccessor.Generator.Factory.Models;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Text;
 using SourceGenerateHelper;
 
 [Generator]
-public sealed class TemplateGenerator : IIncrementalGenerator
+public sealed class FactoryGenerator : IIncrementalGenerator
 {
     private const string GenerateAccessorAttributeName = "BunnyTail.MemberAccessor.GenerateAccessorAttribute";
     private const string TypedAccessorAttributeName = "BunnyTail.MemberAccessor.TypedAccessorAttribute";
