@@ -1,10 +1,10 @@
-namespace BunnyTail.MemberAccessor.Generator.Factory;
+namespace BunnyTail.MemberAccessor.Generator;
 
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-using BunnyTail.MemberAccessor.Generator.Factory.Models;
+using BunnyTail.MemberAccessor.Generator.Models;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
