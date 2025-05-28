@@ -1,12 +1,14 @@
 namespace Benchmark;
 
 using System.Linq.Expressions;
+using System.Reflection;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 
 using BunnyTail.MemberAccessor;
@@ -32,6 +34,7 @@ public class BenchmarkConfig : ManualConfig
             StatisticColumn.Error,
             StatisticColumn.StdDev);
         AddDiagnoser(MemoryDiagnoser.Default, new DisassemblyDiagnoser(new DisassemblyDiagnoserConfig(maxDepth: 3, printSource: true, printInstructionAddresses: true, exportDiff: true)));
+        AddJob(Job.MediumRun);
     }
 }
 
@@ -43,6 +46,10 @@ public class Benchmark
 
     private static readonly Data Data = new();
 
+    private PropertyInfo property = default!;
+
+    private IAccessor accessor = default!;
+
     private Func<Data, int> expressionGetter = default!;
     private Func<Data, int> generatorGetter = default!;
     private Action<Data, int> expressionSetter = default!;
@@ -51,6 +58,10 @@ public class Benchmark
     [GlobalSetup]
     public void Setup()
     {
+        property = typeof(Data).GetProperty(nameof(Data.Id))!;
+
+        accessor = AccessorRegistry.FindAccessor<Data>()!;
+
         expressionGetter = ExpressionHelper.CreateGetter<Data, int>(nameof(Data.Id));
         expressionSetter = ExpressionHelper.CreateSetter<Data, int>(nameof(Data.Id));
 
@@ -66,6 +77,50 @@ public class Benchmark
         for (var i = 0; i < N; i++)
         {
             _ = o.Id;
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PropertyGetter()
+    {
+        var o = Data;
+        for (var i = 0; i < N; i++)
+        {
+            var pi = typeof(Data).GetProperty(nameof(Data.Id))!;
+            _ = pi.GetValue(o);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PropertyGetterCashed()
+    {
+        var o = Data;
+        var pi = property;
+        for (var i = 0; i < N; i++)
+        {
+            _ = pi.GetValue(o);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void AccessorGetter()
+    {
+        var o = Data;
+        for (var i = 0; i < N; i++)
+        {
+            var access = AccessorRegistry.FindAccessor<Data>()!;
+            _ = access.GetValue(o, nameof(Data.Id));
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void AccessorGetterCached()
+    {
+        var o = Data;
+        var access = accessor;
+        for (var i = 0; i < N; i++)
+        {
+            _ = access.GetValue(o, nameof(Data.Id));
         }
     }
 
@@ -96,6 +151,50 @@ public class Benchmark
         for (var i = 0; i < N; i++)
         {
             o.Id = 0;
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PropertySetter()
+    {
+        var o = Data;
+        for (var i = 0; i < N; i++)
+        {
+            var pi = typeof(Data).GetProperty(nameof(Data.Id))!;
+            pi.SetValue(o, 0);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PropertySetterCashed()
+    {
+        var o = Data;
+        var pi = property;
+        for (var i = 0; i < N; i++)
+        {
+            pi.SetValue(o, 0);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void AccessorSetter()
+    {
+        var o = Data;
+        for (var i = 0; i < N; i++)
+        {
+            var access = AccessorRegistry.FindAccessor<Data>()!;
+            access.SetValue(o, nameof(Data.Id), 0);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void AccessorSetterCached()
+    {
+        var o = Data;
+        var access = accessor;
+        for (var i = 0; i < N; i++)
+        {
+            access.SetValue(o, nameof(Data.Id), 0);
         }
     }
 
