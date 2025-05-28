@@ -1,6 +1,6 @@
 namespace BunnyTail.MemberAccessor;
 
-public class MemberAccessorTest
+public class FactoryTest
 {
     [Fact]
     public void TestBasic()
