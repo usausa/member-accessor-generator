@@ -63,7 +63,11 @@ public sealed class AccessorGenerator : IIncrementalGenerator
 
         var properties = symbol.GetMembers()
             .OfType<IPropertySymbol>()
-            .Select(static x => new PropertyModel(x.Name, x.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+            .Select(static x => new PropertyModel(
+                x.Name,
+                x.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                CanAccess(x.GetMethod),
+                CanAccess(x.SetMethod)))
             .ToArray();
 
         return Results.Success(new TypeModel(
@@ -71,6 +75,11 @@ public sealed class AccessorGenerator : IIncrementalGenerator
             symbol.GetClassName(),
             symbol.TypeArguments.Length,
             new EquatableArray<PropertyModel>(properties)));
+    }
+
+    private static bool CanAccess(IMethodSymbol? method)
+    {
+        return (method is not null) && (method.DeclaredAccessibility == Accessibility.Public);
     }
 
     private static EquatableArray<Result<ClosedGenericModel>> GetClosedGenericModel(GeneratorAttributeSyntaxContext context)
@@ -175,6 +184,8 @@ public sealed class AccessorGenerator : IIncrementalGenerator
 
         var className = $"global::{type.Namespace}.{type.ClassName}";
         var properties = type.Properties.ToArray();
+        var readableProperties = properties.Where(static x => x.CanRead).ToArray();
+        var writableProperties = properties.Where(static x => x.CanWrite).ToArray();
 
         // namespace
         if (!String.IsNullOrEmpty(type.Namespace))
@@ -184,15 +195,15 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
 
         // accessor
-        BuildAccessorSource(builder, type, className, properties);
+        BuildAccessorSource(builder, type, className, readableProperties, writableProperties);
 
         builder.NewLine();
 
         // factory
-        BuildFactorySource(builder, type, className, properties);
+        BuildFactorySource(builder, type, className, readableProperties, writableProperties);
     }
 
-    private static void BuildAccessorSource(SourceBuilder builder, TypeModel type, string className, PropertyModel[] properties)
+    private static void BuildAccessorSource(SourceBuilder builder, TypeModel type, string className, PropertyModel[] readableProperties, PropertyModel[] writableProperties)
     {
         // class
         builder.Indent()
@@ -213,7 +224,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
             .Append("switch (name)")
             .NewLine();
         builder.BeginScope();
-        foreach (var property in properties)
+        foreach (var property in readableProperties)
         {
             builder
                 .Indent()
@@ -248,7 +259,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
             .Append("switch (name)")
             .NewLine();
         builder.BeginScope();
-        foreach (var property in properties)
+        foreach (var property in writableProperties)
         {
             builder
                 .Indent()
@@ -275,7 +286,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         builder.EndScope();
     }
 
-    private static void BuildFactorySource(SourceBuilder builder, TypeModel type, string className, PropertyModel[] properties)
+    private static void BuildFactorySource(SourceBuilder builder, TypeModel type, string className, PropertyModel[] readableProperties, PropertyModel[] writableProperties)
     {
         // class
         builder.Indent()
@@ -291,9 +302,9 @@ public sealed class AccessorGenerator : IIncrementalGenerator
 
         // getter
         BeginDictionary(builder, "ObjectGetter", "global::System.Func<object, object?>");
-        for (var i = 0; i < properties.Length; i++)
+        for (var i = 0; i < readableProperties.Length; i++)
         {
-            var property = properties[i];
+            var property = readableProperties[i];
             builder
                 .Indent()
                 .Append("{ \"")
@@ -303,7 +314,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
                 .Append(")x).")
                 .Append(property.Name)
                 .Append("! }")
-                .AppendIf(i < properties.Length - 1, ",")
+                .AppendIf(i < readableProperties.Length - 1, ",")
                 .NewLine();
         }
         EndDictionary(builder);
@@ -312,9 +323,9 @@ public sealed class AccessorGenerator : IIncrementalGenerator
 
         // setter
         BeginDictionary(builder, "ObjectSetter", "global::System.Action<object, object?>");
-        for (var i = 0; i < properties.Length; i++)
+        for (var i = 0; i < writableProperties.Length; i++)
         {
-            var property = properties[i];
+            var property = writableProperties[i];
             builder
                 .Indent()
                 .Append("{ \"")
@@ -326,7 +337,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
                 .Append(" = (")
                 .Append(property.Type)
                 .Append(")v! }")
-                .AppendIf(i < properties.Length - 1, ",")
+                .AppendIf(i < writableProperties.Length - 1, ",")
                 .NewLine();
         }
         EndDictionary(builder);
@@ -335,9 +346,9 @@ public sealed class AccessorGenerator : IIncrementalGenerator
 
         // getter
         BeginDictionary(builder, "TypedGetter", "object");
-        for (var i = 0; i < properties.Length; i++)
+        for (var i = 0; i < readableProperties.Length; i++)
         {
-            var property = properties[i];
+            var property = readableProperties[i];
             builder
                 .Indent()
                 .Append("{ \"")
@@ -351,7 +362,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
                 .Append(" x) => x.")
                 .Append(property.Name)
                 .Append("!) }")
-                .AppendIf(i < properties.Length - 1, ",")
+                .AppendIf(i < readableProperties.Length - 1, ",")
                 .NewLine();
         }
         EndDictionary(builder);
@@ -360,9 +371,9 @@ public sealed class AccessorGenerator : IIncrementalGenerator
 
         // setter
         BeginDictionary(builder, "TypedSetter", "object");
-        for (var i = 0; i < properties.Length; i++)
+        for (var i = 0; i < writableProperties.Length; i++)
         {
-            var property = properties[i];
+            var property = writableProperties[i];
             builder
                 .Indent()
                 .Append("{ \"")
@@ -378,7 +389,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
                 .Append(" v) => x.")
                 .Append(property.Name)
                 .Append(" = v!) }")
-                .AppendIf(i < properties.Length - 1, ",")
+                .AppendIf(i < writableProperties.Length - 1, ",")
                 .NewLine();
         }
         EndDictionary(builder);
