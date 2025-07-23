@@ -6,11 +6,11 @@
     <File Path="Analyzers.ruleset" />
     <File Path="BunnyTail.MemberAccessor.props" />
     <File Path="BunnyTail.MemberAccessor.sln.DotSettings" />
+    <File Path="CodeCoverage.runsettings" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="LICENSE" />
     <File Path="README.md" />
-    <File Path="test.runsettings" />
   </Folder>
   <Project Path="BunnyTail.MemberAccessor/BunnyTail.MemberAccessor.csproj">
     <BuildDependency Project="BunnyTail.MemberAccessor.Generator/BunnyTail.MemberAccessor.Generator.csproj" />
