@@ -182,7 +182,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         builder.EnableNullable();
         builder.NewLine();
 
-        var className = $"global::{type.Namespace}.{type.ClassName}";
+        var className = String.IsNullOrEmpty(type.Namespace) ? $"global::{type.ClassName}" : $"global::{type.Namespace}.{type.ClassName}";
         var properties = type.Properties.ToArray();
         var readableProperties = properties.Where(static x => x.CanRead).ToArray();
         var writableProperties = properties.Where(static x => x.CanWrite).ToArray();
