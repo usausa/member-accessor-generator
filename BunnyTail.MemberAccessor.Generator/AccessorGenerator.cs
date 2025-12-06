@@ -207,9 +207,8 @@ public sealed class AccessorGenerator : IIncrementalGenerator
     {
         // class
         builder.Indent()
-            .Append("internal sealed class ");
-        AppendAccessorName(builder, type);
-        builder
+            .Append("internal sealed class ")
+            .AppendBy(type, BuildAccessorName)
             .Append(" : global::BunnyTail.MemberAccessor.IAccessor")
             .NewLine();
         builder.BeginScope();
@@ -292,9 +291,8 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         // class
         builder
             .Indent()
-            .Append("internal sealed class ");
-        AppendFactoryName(builder, type);
-        builder
+            .Append("internal sealed class ")
+            .AppendBy(type, BuildFactoryName)
             .Append(" : global::BunnyTail.MemberAccessor.IAccessorFactory<")
             .Append(className)
             .Append('>')
@@ -467,15 +465,12 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         {
             builder
                 .Indent()
-                .Append("global::BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(");
-            AppendRegistryTargetName(builder, type);
-            builder
-                .Append("), typeof(");
-            AppendRegistryAccessorName(builder, type);
-            builder
-                .Append("), typeof(");
-            AppendRegistryFactoryName(builder, type);
-            builder
+                .Append("global::BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(")
+                .AppendBy(type, BuildRegistryTargetName)
+                .Append("), typeof(")
+                .AppendBy(type, BuildRegistryAccessorName)
+                .Append("), typeof(")
+                .AppendBy(type, BuildRegistryFactoryName)
                 .Append("));")
                 .NewLine();
             if (type.TypeArgumentCount > 0)
@@ -488,15 +483,12 @@ public sealed class AccessorGenerator : IIncrementalGenerator
                     {
                         builder
                             .Indent()
-                            .Append("global::BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(");
-                        AppendRegistryTargetName(builder, closedType);
-                        builder
-                            .Append("), typeof(");
-                        AppendRegistryAccessorName(builder, closedType);
-                        builder
-                            .Append("), typeof(");
-                        AppendRegistryFactoryName(builder, closedType);
-                        builder
+                            .Append("global::BunnyTail.MemberAccessor.AccessorRegistry.RegisterFactory(typeof(")
+                            .AppendBy(closedType, BuildRegistryTargetName)
+                            .Append("), typeof(")
+                            .AppendBy(closedType, BuildRegistryAccessorName)
+                            .Append("), typeof(")
+                            .AppendBy(closedType, BuildRegistryFactoryName)
                             .Append("));")
                             .NewLine();
                     }
@@ -513,7 +505,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
     // Helper
     // ------------------------------------------------------------
 
-    private static void AppendAccessorName(SourceBuilder builder, TypeModel model)
+    private static void BuildAccessorName(SourceBuilder builder, TypeModel model)
     {
         var index = model.ClassName.IndexOf('<');
         if (index < 0)
@@ -526,7 +518,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
     }
 
-    private static void AppendFactoryName(SourceBuilder builder, TypeModel model)
+    private static void BuildFactoryName(SourceBuilder builder, TypeModel model)
     {
         var index = model.ClassName.IndexOf('<');
         if (index < 0)
@@ -539,9 +531,9 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
     }
 
-    private static void AppendRegistryTargetName(SourceBuilder builder, TypeModel model)
+    private static void BuildRegistryTargetName(SourceBuilder builder, TypeModel model)
     {
-        AppendNamespace(builder, model.Namespace);
+        builder.AppendBy(model.Namespace, BuildNamespace);
 
         var index = model.ClassName.IndexOf('<');
         if (index < 0)
@@ -550,14 +542,13 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
         else
         {
-            builder.Append(model.ClassName.Substring(0, index));
-            AppendGenericParameter(builder, model.TypeArgumentCount);
+            builder.Append(model.ClassName.Substring(0, index)).AppendBy(model.TypeArgumentCount, BuildGenericParameter);
         }
     }
 
-    private static void AppendRegistryAccessorName(SourceBuilder builder, TypeModel model)
+    private static void BuildRegistryAccessorName(SourceBuilder builder, TypeModel model)
     {
-        AppendNamespace(builder, model.Namespace);
+        builder.AppendBy(model.Namespace, BuildNamespace);
 
         var index = model.ClassName.IndexOf('<');
         if (index < 0)
@@ -566,14 +557,13 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
         else
         {
-            builder.Append(model.ClassName.Substring(0, index)).Append(AccessorSuffix);
-            AppendGenericParameter(builder, model.TypeArgumentCount);
+            builder.Append(model.ClassName.Substring(0, index)).Append(AccessorSuffix).AppendBy(model.TypeArgumentCount, BuildGenericParameter);
         }
     }
 
-    private static void AppendRegistryFactoryName(SourceBuilder builder, TypeModel model)
+    private static void BuildRegistryFactoryName(SourceBuilder builder, TypeModel model)
     {
-        AppendNamespace(builder, model.Namespace);
+        builder.AppendBy(model.Namespace, BuildNamespace);
 
         var index = model.ClassName.IndexOf('<');
         if (index < 0)
@@ -582,35 +572,34 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
         else
         {
-            builder.Append(model.ClassName.Substring(0, index)).Append(AccessorFactorySuffix);
-            AppendGenericParameter(builder, model.TypeArgumentCount);
+            builder.Append(model.ClassName.Substring(0, index)).Append(AccessorFactorySuffix).AppendBy(model.TypeArgumentCount, BuildGenericParameter);
         }
     }
 
-    private static void AppendRegistryTargetName(SourceBuilder builder, ClosedGenericModel model)
+    private static void BuildRegistryTargetName(SourceBuilder builder, ClosedGenericModel model)
     {
-        AppendNamespace(builder, model.Namespace);
+        builder.AppendBy(model.Namespace, BuildNamespace);
 
         builder.Append(model.ClassName);
     }
 
-    private static void AppendRegistryAccessorName(SourceBuilder builder, ClosedGenericModel model)
+    private static void BuildRegistryAccessorName(SourceBuilder builder, ClosedGenericModel model)
     {
-        AppendNamespace(builder, model.Namespace);
+        builder.AppendBy(model.Namespace, BuildNamespace);
 
         var index = model.ClassName.IndexOf('<');
         builder.Append(model.ClassName.Substring(0, index)).Append(AccessorSuffix).Append(model.ClassName.Substring(index));
     }
 
-    private static void AppendRegistryFactoryName(SourceBuilder builder, ClosedGenericModel model)
+    private static void BuildRegistryFactoryName(SourceBuilder builder, ClosedGenericModel model)
     {
-        AppendNamespace(builder, model.Namespace);
+        builder.AppendBy(model.Namespace, BuildNamespace);
 
         var index = model.ClassName.IndexOf('<');
         builder.Append(model.ClassName.Substring(0, index)).Append(AccessorFactorySuffix).Append(model.ClassName.Substring(index));
     }
 
-    private static void AppendNamespace(SourceBuilder builder, string ns)
+    private static void BuildNamespace(SourceBuilder builder, string ns)
     {
         if (!String.IsNullOrEmpty(ns))
         {
@@ -618,7 +607,7 @@ public sealed class AccessorGenerator : IIncrementalGenerator
         }
     }
 
-    private static void AppendGenericParameter(SourceBuilder builder, int count)
+    private static void BuildGenericParameter(SourceBuilder builder, int count)
     {
         builder.Append('<');
         for (var i = 0; i < count - 1; i++)

@@ -43,25 +43,28 @@ var id = getter(data);
 ## Benchmark
 
 ```
-BenchmarkDotNet v0.14.0, Windows 11 (10.0.26100.2894)
-AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 9.0.102
-  [Host]     : .NET 9.0.1 (9.0.124.61010), X64 RyuJIT AVX2
-  DefaultJob : .NET 9.0.1 (9.0.124.61010), X64 RyuJIT AVX2
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.7171/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5900X 3.70GHz, 1 CPU, 24 logical and 12 physical cores
+.NET SDK 10.0.100
+  [Host]    : .NET 10.0.0 (10.0.0, 10.0.25.52411), X64 RyuJIT x86-64-v3
+  MediumRun : .NET 10.0.0 (10.0.0, 10.0.25.52411), X64 RyuJIT x86-64-v3
+
+Job=MediumRun  IterationCount=15  LaunchCount=2  
+WarmupCount=10  
 ```
-| Method               | Mean       | Error     | StdDev    | Median     | Min        | Max        | P90        | Gen0   | Code Size | Allocated |
-|--------------------- |-----------:|----------:|----------:|-----------:|-----------:|-----------:|-----------:|-------:|----------:|----------:|
-| DirectGetter         |  0.2474 ns | 0.0051 ns | 0.0075 ns |  0.2461 ns |  0.2340 ns |  0.2639 ns |  0.2573 ns |      - |      10 B |         - |
-| PropertyGetter       | 28.2982 ns | 0.3361 ns | 0.4926 ns | 28.2985 ns | 27.3895 ns | 29.2224 ns | 28.8837 ns | 0.0014 |   6,737 B |      24 B |
-| PropertyGetterCashed | 12.0477 ns | 0.2747 ns | 0.4112 ns | 12.0093 ns | 11.2672 ns | 12.9446 ns | 12.6706 ns | 0.0014 |   2,877 B |      24 B |
-| AccessorGetter       | 19.6870 ns | 1.5183 ns | 2.2255 ns | 18.5110 ns | 17.1518 ns | 23.6697 ns | 22.6651 ns | 0.0014 |        NA |      24 B |
-| AccessorGetterCached |  2.9748 ns | 0.0438 ns | 0.0614 ns |  2.9845 ns |  2.8550 ns |  3.1234 ns |  3.0399 ns | 0.0014 |     174 B |      24 B |
-| ExpressionGetter     |  1.4170 ns | 0.0176 ns | 0.0247 ns |  1.4083 ns |  1.3824 ns |  1.4858 ns |  1.4424 ns |      - |      54 B |         - |
-| GeneratorGetter      |  0.2493 ns | 0.0051 ns | 0.0077 ns |  0.2484 ns |  0.2346 ns |  0.2673 ns |  0.2576 ns |      - |      76 B |         - |
-| DirectSetter         |  0.2461 ns | 0.0046 ns | 0.0069 ns |  0.2464 ns |  0.2319 ns |  0.2602 ns |  0.2559 ns |      - |      28 B |         - |
-| PropertySetter       | 30.9568 ns | 0.7685 ns | 1.1264 ns | 30.9573 ns | 28.9010 ns | 33.1765 ns | 32.5602 ns | 0.0014 |   7,622 B |      24 B |
-| PropertySetterCashed | 14.8384 ns | 0.3280 ns | 0.4910 ns | 14.7831 ns | 14.0345 ns | 15.9141 ns | 15.4103 ns | 0.0014 |   3,747 B |      24 B |
-| AccessorSetter       | 18.5967 ns | 0.4391 ns | 0.6572 ns | 18.6379 ns | 17.2392 ns | 19.8214 ns | 19.3874 ns | 0.0014 |        NA |      24 B |
-| AccessorSetterCached |  2.7250 ns | 0.0634 ns | 0.0949 ns |  2.7154 ns |  2.5550 ns |  2.9903 ns |  2.8612 ns | 0.0014 |     191 B |      24 B |
-| ExpressionSetter     |  1.4299 ns | 0.0171 ns | 0.0255 ns |  1.4219 ns |  1.3967 ns |  1.4988 ns |  1.4633 ns |      - |      57 B |         - |
-| GeneratorSetter      |  0.4795 ns | 0.0071 ns | 0.0105 ns |  0.4783 ns |  0.4610 ns |  0.5038 ns |  0.4926 ns |      - |      85 B |         - |
+| Method               | Mean       | Error     | StdDev    | Min        | Max        | P90        | Code Size | Gen0   | Allocated |
+|--------------------- |-----------:|----------:|----------:|-----------:|-----------:|-----------:|----------:|-------:|----------:|
+| DirectGetter         |  0.2243 ns | 0.0064 ns | 0.0095 ns |  0.2138 ns |  0.2538 ns |  0.2375 ns |      10 B |      - |         - |
+| PropertyGetter       | 20.6895 ns | 0.5456 ns | 0.8166 ns | 19.6389 ns | 22.6418 ns | 21.8329 ns |   3,019 B | 0.0014 |      24 B |
+| PropertyGetterCashed |  8.9811 ns | 0.2230 ns | 0.3338 ns |  8.5007 ns |  9.7118 ns |  9.3515 ns |   3,278 B | 0.0014 |      24 B |
+| AccessorGetter       | 10.6687 ns | 0.2781 ns | 0.4163 ns |  9.9247 ns | 11.7124 ns | 11.1563 ns |   3,219 B | 0.0014 |      24 B |
+| AccessorGetterCached |  2.3157 ns | 0.0976 ns | 0.1461 ns |  2.0956 ns |  2.5933 ns |  2.4920 ns |     174 B | 0.0014 |      24 B |
+| ExpressionGetter     |  1.3618 ns | 0.0267 ns | 0.0392 ns |  1.2959 ns |  1.4362 ns |  1.4167 ns |      54 B |      - |         - |
+| GeneratorGetter      |  0.2304 ns | 0.0055 ns | 0.0082 ns |  0.2172 ns |  0.2518 ns |  0.2416 ns |      76 B |      - |         - |
+| DirectSetter         |  0.2291 ns | 0.0066 ns | 0.0099 ns |  0.2145 ns |  0.2458 ns |  0.2427 ns |      28 B |      - |         - |
+| PropertySetter       | 19.3523 ns | 0.6403 ns | 0.9584 ns | 17.8336 ns | 21.3628 ns | 20.3991 ns |   8,536 B | 0.0014 |      24 B |
+| PropertySetterCashed | 11.1574 ns | 0.2706 ns | 0.4051 ns | 10.5017 ns | 11.9655 ns | 11.5931 ns |   8,736 B | 0.0014 |      24 B |
+| AccessorSetter       | 10.5961 ns | 0.2128 ns | 0.3120 ns | 10.1118 ns | 11.3181 ns | 11.0217 ns |   3,238 B | 0.0014 |      24 B |
+| AccessorSetterCached |  2.2665 ns | 0.1085 ns | 0.1623 ns |  1.9878 ns |  2.5154 ns |  2.4811 ns |     191 B | 0.0014 |      24 B |
+| ExpressionSetter     |  1.4610 ns | 0.0427 ns | 0.0599 ns |  1.3909 ns |  1.6234 ns |  1.5324 ns |      57 B |      - |         - |
+| GeneratorSetter      |  0.5057 ns | 0.0181 ns | 0.0259 ns |  0.4630 ns |  0.5806 ns |  0.5321 ns |      85 B |      - |         - |
